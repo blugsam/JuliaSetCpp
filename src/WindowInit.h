@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <GLFW/glfw3.h>
 
@@ -14,7 +16,7 @@ namespace WindowInit
 		int windowedYPos = 100;
 	};
 
-	GLFWwindow* juliaSetCreateWindow()
+	GLFWwindow* JuliaSetCreateWindow()
 	{
 		WindowState* state = new WindowState();
 
@@ -26,7 +28,7 @@ namespace WindowInit
 		}
 
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_SAMPLES, MSAA_VALUE);
@@ -44,7 +46,7 @@ namespace WindowInit
 			glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
 			state->windowWidth = mode->width;
-			state->windowWidth = mode->height;
+			state->windowHeight = mode->height;
 		}
 
 		GLFWwindow* window = glfwCreateWindow(state->windowWidth, state->windowHeight, "Julia set", monitor, NULL);
@@ -59,10 +61,12 @@ namespace WindowInit
 
 		glfwMakeContextCurrent(window);
 
+		glfwSetWindowUserPointer(window, state);
+
 		return window;
 	}
 
-	void framebufferSizeCallback(GLFWwindow* window, int width, int height)
+	static void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 	{
 		glViewport(0, 0, width, height);
 	}
