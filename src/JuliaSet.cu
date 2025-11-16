@@ -6,44 +6,53 @@
 #include "WindowInit.h"
 #include "KeyCallback.h"
 
-int main(void)
+int main()
 {
 	glfwSetErrorCallback(GlfwErrorHandler::GlfwErrorCallback);
 
-	GLFWwindow* window = WindowInit::juliaSetCreateWindow();
+	GLFWwindow* window = WindowInit::JuliaSetCreateWindow();
+
+	glfwSetFramebufferSizeCallback(window, WindowInit::framebufferSizeCallback);
 
 	glfwSetKeyCallback(window, KeyCallback::FullscreenKeyCallback);
 
-	window = glfwCreateWindow(DIM, DIM, "Julia set", NULL, NULL);
-	if (!window)
-	{
-		glfwTerminate();
-		return -1;
-	}
+	std::cout << "System's CUDA supported version: " << glGetString(CUDA_VERSION) << std::endl;
 
-	glfwMakeContextCurrent(window);
-	glViewport(0, 0, DIM, DIM);
-	/* Создаём битовую карту */
-	DataBlock data;
-	unsigned char* bitmap = new unsigned char[DIM * DIM * 4];
-	/* указатель dev bitmap для хранения копии данных на устройстве (GPU) */
-	unsigned char* dev_bitmap;
+	double prevS = glfwGetTime();
+	double titleCountdownS = 0.1;
 
 	while (!glfwWindowShouldClose(window))
 	{
-		cudaMalloc((void**)&dev_bitmap, DIM * DIM * 4);
-		data.dev_bitmap = dev_bitmap;
-		dim3 grid(DIM, DIM);
-		kernel << <grid, 1 >> > (dev_bitmap);
-		cudaMemcpy(bitmap, dev_bitmap, DIM * DIM * 4, cudaMemcpyDeviceToHost);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glDrawPixels(DIM, DIM, GL_RGBA, GL_UNSIGNED_BYTE, bitmap);
-		glfwSwapBuffers(window);
+		double currS = glfwGetTime();
+		double elapsedS = currS - prevS;
+		prevS = currS;
+		titleCountdownS -= elapsedS;
+		if (titleCountdownS <= 0.0 && elapsedS > 0.0)
+		{
+			double fps = 1.0 / elapsedS;
+
+			char tmp[256];
+			sprintf(tmp, "FPS %.2lf", fps);
+			glfwSetWindowTitle(window, tmp);
+			titleCountdownS = 0.1;
+		}
+		
 		glfwPollEvents();
+
+		glClearColor(0.6f, 0.6f, 0.8f, 1.0f);
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		glfwSwapInterval(1);
+		glfwSwapBuffers(window);
 	}
 
+	WindowInit::WindowState* state = static_cast<WindowInit::WindowState*>(glfwGetWindowUserPointer(window));
+	delete state;
+
+	glfwDestroyWindow(window);
+
 	glfwTerminate();
-	cudaFree(dev_bitmap);
-	delete bitmap;
+
 	return 0;
 }
