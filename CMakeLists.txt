@@ -8,6 +8,8 @@ set(VENDOR_DIR "${PROJECT_SOURCE_DIR}/vendor")
 set(GLFW_DIR "${VENDOR_DIR}/glfw")
 set(IMGUI_DIR "${VENDOR_DIR}/imgui")
 set(GLAD_DIR "${VENDOR_DIR}/glad")
+set(GLM_DIR "${VENDOR_DIR}/glm")
+set(FREETYPE_DIR "${VENDOR_DIR}/freetype")
 
 find_package(OpenGL REQUIRED)
 find_package(CUDAToolkit REQUIRED)
@@ -18,9 +20,36 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_subdirectory(${GLFW_DIR})
 
 add_subdirectory(${GLAD_DIR})
-
+add_subdirectory(${GLM_DIR})
 add_subdirectory(${IMGUI_DIR})
+add_subdirectory(${FREETYPE_DIR})
 
-add_executable(${PROJECT_NAME} "src/JuliaSet.cu" "src/GlfwErrorHandler.h" "src/WindowInit.h" "src/KeyCallback.h")
+add_executable(${PROJECT_NAME}
+    src/JuliaSet.cpp
 
-target_link_libraries(${PROJECT_NAME} PRIVATE glfw glad imgui OpenGL::GL CUDA::cudart)
+    src/Backend/GLFW.cpp 
+    src/Backend/Backend.cpp 
+    src/UserInput/UserInput.cpp
+    src/UI/TextRenderer.cpp 
+    src/API/GL_Backend.cpp
+    src/UI/FpsService.cpp 
+    # src/ViewPort/ViewPort.cpp
+    # src/ViewPort/ViewPortService.cpp
+)
+
+configure_file(
+    ${CMAKE_SOURCE_DIR}/src/misc/root_directory.h.in
+    ${CMAKE_BINARY_DIR}/generated/root_directory.h
+    @ONLY)
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${CMAKE_BINARY_DIR}/generated)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    glfw
+    glad
+    glm
+    imgui
+    freetype
+    OpenGL::GL
+    CUDA::cudart)

@@ -1,5 +1,5 @@
 #include "GLFW.h"
-
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
 #include <iostream>
@@ -8,6 +8,8 @@
 namespace Backend::GLFW
 {
     const int MSAA_VALUE = 0;
+    const int XWINDOW_POS = 5;
+    const int YWINDOW_POS = 35;
     const GLFWvidmode* MODE;
 	GLFWwindow* window = nullptr;
 	GLFWmonitor* monitor = nullptr;
@@ -55,7 +57,7 @@ namespace Backend::GLFW
             currentWindowWidth = windowedWidth;
             currentWindowHeight = windowedHeight;
             window = glfwCreateWindow(windowedWidth, windowedHeight, "Julia set", nullptr, nullptr);
-            glfwSetWindowPos(window, 5, 35);
+            glfwSetWindowPos(window, XWINDOW_POS, YWINDOW_POS);
         }
         else if (windowedMode == WindowedMode::FULLSCREEN)
         {
@@ -72,6 +74,11 @@ namespace Backend::GLFW
         glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
 
         return true;
+    }
+
+    void MakeContextCurrent()
+    {
+        glfwMakeContextCurrent(window);
     }
 
     void BeginFrame()
@@ -100,12 +107,12 @@ namespace Backend::GLFW
         }
         else if (windowedMode == WindowedMode::WINDOWED)
         {
-            currentWindowWidth = windowedWidth;
-            currentWindowHeight = windowedHeight;
+            currentWindowWidth = windowedWidth - 1;
+            currentWindowHeight = windowedHeight - 1;
         }
 
         glfwSetWindowMonitor(window, nullptr, 0, 0, currentWindowWidth, currentWindowHeight, MODE->refreshRate);
-        glfwSetWindowPos(window, 5, 35);
+        glfwSetWindowPos(window, XWINDOW_POS, YWINDOW_POS);
     }
 
     void ToggleFullscreen()
@@ -163,6 +170,11 @@ namespace Backend::GLFW
     int GetCurrentWindowHeight()
     {
         return currentWindowHeight;
+    }
+
+    double GetTime()
+    {
+        return glfwGetTime();
     }
 
     void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
