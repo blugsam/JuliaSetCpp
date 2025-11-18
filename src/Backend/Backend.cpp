@@ -1,7 +1,11 @@
 #include "BackEnd.h"
-
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include "../API/GL_Backend.h"
 #include "GLFW.h"
 #include "../UserInput/UserInput.h"
+#include "../UI/TextRenderer.h"
+#include "../ViewPort/ViewPortService.h"
 
 namespace Backend
 {
@@ -15,7 +19,11 @@ namespace Backend
 			return false;
 		}
 
+		OpenGLBackend::Init();
+
+		// ViewportService::Init();
 		UserInput::Init(Backend::GetWindowPointer());
+		TextRenderer::Init();
 
 		glfwShowWindow(static_cast<GLFWwindow*>(Backend::GetWindowPointer()));
 		return true;
@@ -23,6 +31,7 @@ namespace Backend
 
 	void BeginFrame()
 	{
+		TextRenderer::BeginFrame();
 		GLFW::BeginFrame();
 	}
 
@@ -40,6 +49,7 @@ namespace Backend
 	void Destroy()
 	{
 		GLFW::Destroy();
+		TextRenderer::Destroy();
 	}
 
 	void SetPresentTargetSize(int width, int height)

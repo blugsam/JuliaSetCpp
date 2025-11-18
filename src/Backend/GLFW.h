@@ -5,6 +5,7 @@
 namespace Backend::GLFW
 {
 	bool Init(WindowedMode newWindowedMode);
+	void MakeContextCurrent();
 	void BeginFrame();
 	void EndFrame();
 	void Destroy();
@@ -19,4 +20,5 @@ namespace Backend::GLFW
 	int GetFullScreenHeight();
 	int GetCurrentWindowWidth();
 	int GetCurrentWindowHeight();
+	double GetTime();
 }

@@ -1,0 +1,1 @@
+static char const * logl_root = "@CMAKE_SOURCE_DIR@";
