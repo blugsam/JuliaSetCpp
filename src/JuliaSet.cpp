@@ -5,9 +5,6 @@
 #include "UI/TextRenderer.h"
 #include "UI/FpsService.h"
 #include "Backend/Backend.h"
-// )
-#include "ViewPort/Viewport.h"
-#include "ViewPort/ViewPortService.h"
 
 int main()
 {
