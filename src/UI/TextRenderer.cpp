@@ -22,6 +22,9 @@ namespace TextRenderer
 	void TextRenderCall(int length, GLuint shader);
 	const unsigned int ARRAY_LIMIT = 128;
 
+	const float REFERENCE_WIDTH = 1920.0f;
+	const float REFERENCE_HEIGHT = 1080.0f;
+
 	/// Holds all state information relevant to a character as loaded using FreeType
 	struct Character
 	{
@@ -37,8 +40,10 @@ namespace TextRenderer
 	std::vector<glm::mat4> transforms;
 	std::vector<int> letterMap;
 	Shader* textShader;
-	int currentWidth = 0;
-	int currentHeight = 0;
+
+	static glm::mat4 s_projection;
+	int cachedWidth = 0;
+	int cachedHeight = 0;
 
 	bool Init()
 	{
@@ -61,7 +66,7 @@ namespace TextRenderer
 		}
 		else
 		{
-			FT_Set_Pixel_Sizes(face, 256, 256);
+			FT_Set_Pixel_Sizes(face, 0, 256);
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 			glGenTextures(1, &textureArray);
 			glActiveTexture(GL_TEXTURE0);
@@ -116,6 +121,8 @@ namespace TextRenderer
 		textShader->use();
 		glUniform1i(glGetUniformLocation(textShader->ID, "ourTexture"), 0);
 
+		BeginFrame();
+
 		return true;
 	}
 
@@ -124,22 +131,38 @@ namespace TextRenderer
 		int newWidth = Backend::GetCurrentWindowWidth();
 		int newHeight = Backend::GetCurrentWindowHeight();
 
-		if (currentWidth != newWidth || currentHeight != newHeight)
-		{
-			currentWidth = newWidth;
-			currentHeight = newHeight;
+		if (newWidth == 0 || newHeight == 0) return;
 
-			glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(newWidth), static_cast<float>(newHeight), 0.0f);
+		if (newWidth != cachedWidth || newHeight != cachedHeight)
+		{
+			cachedWidth = newWidth;
+			cachedHeight = newHeight;
+
+			glViewport(0, 0, newWidth, newHeight);
+
+			s_projection = glm::ortho(0.0f, static_cast<float>(newWidth), static_cast<float>(newHeight), 0.0f);
+
 			textShader->use();
-			glUniformMatrix4fv(glGetUniformLocation(textShader->ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+			glUniformMatrix4fv(glGetUniformLocation(textShader->ID, "projection"), 1, GL_FALSE, glm::value_ptr(s_projection));
 		}
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
-	void Render(std::string text, float x, float y, float scale, glm::vec3 color)
+	void Render(const std::string& text, float x, float y, float scale, const glm::vec3& color)
 	{
-		// activate corresponding render state	
-		scale = scale * 48.0f / 256.0f;
-		float copyX = x;
+		float widthRatio = (float)cachedWidth / REFERENCE_WIDTH;
+		float heightRatio = (float)cachedHeight / REFERENCE_HEIGHT;
+
+		float finalX = x * widthRatio;
+		float finalY = y * heightRatio;
+
+		float finalScale = scale * heightRatio;
+
+		finalScale = finalScale * 48.0f / 256.0f;
+		float copyX = finalX;
+
 		textShader->use();
 		glUniform3f(glGetUniformLocation(textShader->ID, "textColor"), color.x, color.y, color.z);
 		glActiveTexture(GL_TEXTURE0);
@@ -149,7 +172,6 @@ namespace TextRenderer
 
 		int workingIndex = 0;
 
-		// iterate through all characters
 		std::string::const_iterator c;
 		for (c = text.begin(); c != text.end(); c++)
 		{
@@ -157,39 +179,22 @@ namespace TextRenderer
 
 			if (*c == '\n')
 			{
-				y -= ((ch.Size.y)) * 1.3 * scale;
-				x = copyX;
+				finalY -= ((ch.Size.y)) * 1.3 * finalScale;
+				finalX = copyX;
 			}
 			else if (*c == ' ')
 			{
-				x += (ch.Advance >> 6) * scale;
+				finalX += (ch.Advance >> 6) * finalScale;
 			}
 			else
 			{
-				float xpos = x + ch.Bearing.x * scale;
-				float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
+				float xpos = finalX + ch.Bearing.x * finalScale;
+				float ypos = finalY - (ch.Size.y - ch.Bearing.y) * finalScale;
 
-				transforms[workingIndex] = glm::translate(glm::mat4(1.0f), glm::vec3(xpos, ypos, 0)) * glm::scale(glm::mat4(1.0f), glm::vec3(256 * scale, 256 * scale, 0));
+				transforms[workingIndex] = glm::translate(glm::mat4(1.0f), glm::vec3(xpos, ypos, 0)) * glm::scale(glm::mat4(1.0f), glm::vec3(256 * finalScale, 256 * finalScale, 0));
 				letterMap[workingIndex] = ch.TextureID;
-				//float w = ch.Size.x * scale;
-				//float h = ch.Size.y * scale;
-				// update VBO for each character
-				/*float vertices[6][4] = {
-					{ xpos,     ypos + h,   0.0f, 0.0f },
-					{ xpos,     ypos,       0.0f, 1.0f },
-					{ xpos + w, ypos,       1.0f, 1.0f },
 
-					{ xpos,     ypos + h,   0.0f, 0.0f },
-					{ xpos + w, ypos,       1.0f, 1.0f },
-					{ xpos + w, ypos + h,   1.0f, 0.0f }
-				};*/
-				// render glyph texture over quad
-				// update content of VBO memory
-				//glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); // be sure to use glBufferSubData and not glBufferData
-
-				// render quad
-				// now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-				x += (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
+				finalX += (ch.Advance >> 6) * finalScale;
 				workingIndex++;
 				if (workingIndex == ARRAY_LIMIT)
 				{

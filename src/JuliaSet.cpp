@@ -5,6 +5,9 @@
 #include "UI/TextRenderer.h"
 #include "UI/FpsService.h"
 #include "Backend/Backend.h"
+// )
+#include "ViewPort/Viewport.h"
+#include "ViewPort/ViewPortService.h"
 
 int main()
 {
@@ -20,9 +23,11 @@ int main()
     {
         Backend::UpdateUtilities();
         Backend::BeginFrame();
+        Backend::UpdateSystem();
 
         glClearColor(0.2f, 0.1f, 0.3f, 0.4f);
         glClear(GL_COLOR_BUFFER_BIT);
+
         FpsService::UpdateFps();
         TextRenderer::Render("Hello!", 300.0f, 400.0f, 1.0f, glm::vec3(1.0f, 1.0f, 0.0f));
         Backend::EndFrame();

@@ -21,11 +21,14 @@ namespace Backend
 
 		OpenGLBackend::Init();
 
-		// ViewportService::Init();
 		UserInput::Init(Backend::GetWindowPointer());
+
 		TextRenderer::Init();
 
 		glfwShowWindow(static_cast<GLFWwindow*>(Backend::GetWindowPointer()));
+
+		ViewportService::Init();
+
 		return true;
 	}
 
@@ -35,15 +38,20 @@ namespace Backend
 		GLFW::BeginFrame();
 	}
 
-	void EndFrame()
+	void UpdateSystem()
 	{
-		GLFW::EndFrame();
+		ViewportService::Update();
 	}
 
 	void UpdateUtilities()
 	{
 		UpdateLazyKeyPresses();
 		UserInput::Update();
+	}
+
+	void EndFrame()
+	{
+		GLFW::EndFrame();
 	}
 
 	void Destroy()

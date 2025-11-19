@@ -45,7 +45,7 @@ namespace Backend::GLFW
         glfwWindowHint(GLFW_BLUE_BITS, MODE->blueBits);
         glfwWindowHint(GLFW_REFRESH_RATE, MODE->refreshRate);
         // hide windows frame
-        /*glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);*/
+        glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
         fullscreenWidth = MODE->width;
         fullscreenHeight = MODE->height;
         windowedWidth = fullscreenWidth * 0.75f;
@@ -179,7 +179,8 @@ namespace Backend::GLFW
 
     void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
     {
-        // body
+        currentWindowWidth = width;
+        currentWindowHeight = height;
     }
 
 }

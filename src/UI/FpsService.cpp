@@ -4,12 +4,18 @@
 #include "TextRenderer.h"
 #include <string>
 
+// this is freaking insane
+#include "../ViewPort/Viewport.h"
+#include "../ViewPort/ViewPortService.h"
+
 namespace FpsService
 {
 	std::string fps = "";
 	double titleCountdownS = 0.1;
 	double previousTime = 0;
 	int frameCount = 0;
+	Viewport* mainViewport = ViewportService::GetMainViewport();
+	glm::mat4 projection = mainViewport->GetProjectionMatrix();
 
 	void UpdateFps()
 	{
