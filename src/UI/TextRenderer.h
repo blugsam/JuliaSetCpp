@@ -6,6 +6,6 @@ namespace TextRenderer
 {
 	bool Init();
 	void BeginFrame();
-	void Render(std::string text, float x, float y, float scale, glm::vec3 color);
+	void Render(const std::string& text, float x, float y, float scale, const glm::vec3& color);
 	void Destroy();
 }

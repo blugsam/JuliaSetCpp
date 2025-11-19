@@ -33,9 +33,9 @@ add_executable(${PROJECT_NAME}
     src/UI/TextRenderer.cpp 
     src/API/GL_Backend.cpp
     src/UI/FpsService.cpp 
-    # src/ViewPort/ViewPort.cpp
-    # src/ViewPort/ViewPortService.cpp
-)
+    src/ViewPort/Viewport.cpp
+    
+ "src/ViewPort/ViewportService.cpp")
 
 configure_file(
     ${CMAKE_SOURCE_DIR}/src/misc/root_directory.h.in

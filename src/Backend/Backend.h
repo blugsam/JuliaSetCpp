@@ -6,8 +6,9 @@ namespace Backend
 {
 	bool Init(WindowedMode windowMode);
 	void BeginFrame();
-	void EndFrame();
+	void UpdateSystem();
 	void UpdateUtilities();
+	void EndFrame();
 	void Destroy();
 	void SetWindowedMode(const WindowedMode& windowedMode);
 	void ToggleFullscreen();
