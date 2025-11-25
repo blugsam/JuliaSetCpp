@@ -27,6 +27,6 @@ namespace FpsService
 
 	void Render()
 	{
-		TextRenderer::Render(fps, 1800.0f, 10.0f, 1.0f, glm::vec3(1.0f));
+		TextRenderer::Render(fps, 1750.0f, 8.0f, 1.0f, glm::vec3(1.0f));
 	}
 }

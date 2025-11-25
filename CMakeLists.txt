@@ -37,7 +37,7 @@ add_executable(${PROJECT_NAME}
     src/ViewPort/ViewportService.cpp
     src/JuliaSet/JuliaKernels.cu
     src/JuliaSet/JuliaService.cpp
-)
+    src/Imgui/ImguiService.cpp)
 
 configure_file(
     ${CMAKE_SOURCE_DIR}/src/misc/root_directory.h.in

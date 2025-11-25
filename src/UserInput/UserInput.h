@@ -4,7 +4,7 @@
 
 namespace UserInput
 {
-	void Init(void* glfwWindow);
+	void Init();
 	void Update();
 	void ClearKeyStates();
 	bool KeyPressed(unsigned int keycode);

@@ -7,6 +7,7 @@
 #include "Backend/Backend.h"
 #include "JuliaSet/JuliaService.h"
 #include "UI/FpsService.h"
+#include "Imgui/ImguiService.h"
 
 int main()
 {
@@ -28,6 +29,7 @@ int main()
 
         JuliaService::Render();
         FpsService::Render();
+        ImGuiService::Render();
         
         Backend::EndFrame();
     }

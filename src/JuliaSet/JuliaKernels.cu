@@ -1,5 +1,8 @@
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
+#include <iostream>
+
+#define CUDA_CHECK(call) { gpuAssert((call), __FILE__, __LINE__); }
 
 #define BLOCK_SIZE 16
 #define REAL_MIN -1.5f
@@ -7,6 +10,15 @@
 #define IMAG_MIN -1.5f
 #define IMAG_MAX 1.5f
 #define MAX_ITER 300
+
+inline void gpuAssert(cudaError_t code, const char* file, int line, bool abort = true)
+{
+    if (code != cudaSuccess)
+    {
+        fprintf(stderr, "CUDA Error: %s %s %d\n", cudaGetErrorString(code), file, line);
+        if (abort) exit(code);
+    }
+}
 
 __device__ int julia(float x, float y, float cx, float cy)
 {
@@ -23,6 +35,15 @@ __device__ int julia(float x, float y, float cx, float cy)
 
 __device__ void iterationToRGB(int iter, unsigned char* r, unsigned char* g, unsigned char* b)
 {
+    //paint points that have reached the value of infinity to black
+    if (iter == MAX_ITER)
+    {
+        *r = 0;
+        *g = 0;
+        *b = 0;
+        return;
+    }
+
     float t = (float)iter / MAX_ITER;
     *r = (unsigned char)(9 * (1 - t) * t * t * t * 255);
     *g = (unsigned char)(15 * (1 - t) * (1 - t) * t * t * 255);
@@ -52,14 +73,11 @@ __global__ void juliaKernelRGB(unsigned char* output, int width, int height, flo
     output[idx + 2] = b;
 }
 
-extern "C" void LaunchJuliaKernel(unsigned char* devPtr, int width, int height, float time)
+extern "C" void LaunchJuliaKernel(unsigned char* devPtr, int width, int height, float rc, float rs)
 {
     dim3 threadsPerBlock(BLOCK_SIZE, BLOCK_SIZE);
     dim3 numBlocks((width + threadsPerBlock.x - 1) / threadsPerBlock.x,
         (height + threadsPerBlock.y - 1) / threadsPerBlock.y);
 
-    float cx = -0.7f + sin(time) * 0.1f;
-    float cy = 0.27015f + cos(time * 0.5f) * 0.1f;
-
-    juliaKernelRGB << <numBlocks, threadsPerBlock >> > (devPtr, width, height, cx, cy);
+    juliaKernelRGB << <numBlocks, threadsPerBlock >> > (devPtr, width, height, rc, rs);
 }

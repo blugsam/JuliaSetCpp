@@ -8,6 +8,7 @@
 #include "../ViewPort/ViewPortService.h"
 #include "../UI/FpsService.h"
 #include "../JuliaSet/JuliaService.h"
+#include "../Imgui/ImguiService.h"
 
 namespace Backend
 {
@@ -22,12 +23,10 @@ namespace Backend
 		}
 
 		OpenGLBackend::Init();
-
-		UserInput::Init(Backend::GetWindowPointer());
-
-		TextRenderer::Init();
-
+		UserInput::Init();
 		JuliaService::Init();
+		TextRenderer::Init();
+		ImGuiService::Init();
 
 		glfwShowWindow(static_cast<GLFWwindow*>(Backend::GetWindowPointer()));
 
@@ -38,9 +37,10 @@ namespace Backend
 
 	void BeginFrame()
 	{
-		TextRenderer::BeginFrame();
 		GLFW::BeginFrame();
 		JuliaService::BeginFrame();
+		ImGuiService::BeginFrame();
+		TextRenderer::BeginFrame();
 	}
 
 	void UpdateServices()
@@ -57,14 +57,16 @@ namespace Backend
 
 	void EndFrame()
 	{
+		ImGuiService::EndFrame();
 		GLFW::EndFrame();
 	}
 
 	void Destroy()
 	{
-		GLFW::Destroy();
 		TextRenderer::Destroy();
 		JuliaService::Destroy();
+		ImGuiService::Destroy();
+		GLFW::Destroy();
 	}
 
 	void SetPresentTargetSize(int width, int height)
