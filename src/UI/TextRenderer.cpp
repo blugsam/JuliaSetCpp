@@ -54,7 +54,7 @@ namespace TextRenderer
 			return false;
 		}
 
-		std::string fontRoot = FileSystem::getPath("res/Fonts/Born2bSportyFS.otf");
+		std::string fontRoot = FileSystem::getPath("res/Fonts/ProggyClean.ttf");
 
 		std::cout << "Attempting to load font from: " << fontRoot << std::endl;
 

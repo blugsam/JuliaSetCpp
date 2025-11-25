@@ -9,7 +9,7 @@
 #include "../API/GL_Shader.h"
 #include "../Backend/Backend.h"
 
-extern "C" void LaunchJuliaKernel(unsigned char* devPtr, int width, int height, float time);
+extern "C" void LaunchJuliaKernel(unsigned char* devPtr, int width, int height, float rc, float rs);
 
 namespace JuliaService
 {
@@ -22,6 +22,11 @@ namespace JuliaService
 
     int cachedWidth = -1;
     int cachedHeight = -1;
+
+    bool isPaused = false;
+    float alpha = 1.57f;
+    float currentRc = 0.0f;
+    float currentRs = 0.0f;
 
     void Init()
     {
@@ -91,6 +96,15 @@ namespace JuliaService
     {
         if (cachedWidth <= 0 || cachedHeight <= 0 || cudaPboResource == nullptr) return;
 
+        if (!isPaused)
+        {
+            alpha += 0.01f;
+            if (alpha > 6.28318f) alpha -= 6.28318f;
+        }
+
+        currentRc = 0.7885f * cos(alpha);
+        currentRs = 0.7885f * sin(alpha);
+
         unsigned char* devPtr;
         size_t size;
         float time = (float)Backend::GetTime();
@@ -98,7 +112,7 @@ namespace JuliaService
         cudaGraphicsMapResources(1, &cudaPboResource, NULL);
         cudaGraphicsResourceGetMappedPointer((void**)&devPtr, &size, cudaPboResource);
 
-        LaunchJuliaKernel(devPtr, cachedWidth, cachedHeight, time);
+        LaunchJuliaKernel(devPtr, cachedWidth, cachedHeight, currentRc, currentRs);
 
         cudaGraphicsUnmapResources(1, &cudaPboResource, NULL);
 
@@ -122,5 +136,24 @@ namespace JuliaService
         glDeleteVertexArrays(1, &VAO);
         glDeleteBuffers(1, &VBO);
         delete juliaShader;
+    }
+
+    bool& GetPausedState()
+    {
+        return isPaused;
+    }
+
+    float& GetAlphaState()
+    {
+        return alpha;
+    }
+
+    float GetCurrentRc()
+    {
+        return currentRc;
+    }
+    float GetCurrentRs()
+    {
+        return currentRs;
     }
 }

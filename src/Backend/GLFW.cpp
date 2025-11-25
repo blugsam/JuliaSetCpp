@@ -63,7 +63,7 @@ namespace Backend::GLFW
         {
             currentWindowWidth = fullscreenWidth;
             currentWindowHeight = fullscreenHeight;
-            window = glfwCreateWindow(fullscreenWidth, fullscreenHeight, "Julia set", nullptr, nullptr);
+            window = glfwCreateWindow(fullscreenWidth, fullscreenHeight, "Julia set", monitor, nullptr);
         }
         if (window == nullptr)
         {
@@ -104,15 +104,15 @@ namespace Backend::GLFW
         {
             currentWindowWidth = fullscreenWidth;
             currentWindowHeight = fullscreenHeight;
+            glfwSetWindowMonitor(window, monitor, 0, 0, currentWindowWidth, currentWindowHeight, MODE->refreshRate);
         }
         else if (windowedMode == WindowedMode::WINDOWED)
         {
             currentWindowWidth = windowedWidth - 1;
             currentWindowHeight = windowedHeight - 1;
+            glfwSetWindowMonitor(window, nullptr, 0, 0, currentWindowWidth, currentWindowHeight, MODE->refreshRate);
+            glfwSetWindowPos(window, XWINDOW_POS, YWINDOW_POS);
         }
-
-        glfwSetWindowMonitor(window, nullptr, 0, 0, currentWindowWidth, currentWindowHeight, MODE->refreshRate);
-        glfwSetWindowPos(window, XWINDOW_POS, YWINDOW_POS);
     }
 
     void ToggleFullscreen()

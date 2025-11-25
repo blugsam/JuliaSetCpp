@@ -1,4 +1,5 @@
 #include "UserInput.h"
+
 #include <GLFW/glfw3.h>
 
 namespace UserInput
@@ -8,9 +9,9 @@ namespace UserInput
     bool keyDownLastFrame[372];
     GLFWwindow* window;
 
-    void Init(void* glfwWindow)
+    void Init()
     {
-        window = static_cast<GLFWwindow*>(glfwWindow);
+        window = static_cast<GLFWwindow*>(Backend::GetWindowPointer());
     }
 
     void Update()
