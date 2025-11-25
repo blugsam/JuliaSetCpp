@@ -18,12 +18,9 @@
 
 namespace TextRenderer
 {
-	void RenderText(Shader& shader, std::string text, float x, float y, float scale, glm::vec3 color);
-	void TextRenderCall(int length, GLuint shader);
-	const unsigned int ARRAY_LIMIT = 128;
-
 	const float REFERENCE_WIDTH = 1920.0f;
 	const float REFERENCE_HEIGHT = 1080.0f;
+	const unsigned int ARRAY_LIMIT = 128;
 
 	/// Holds all state information relevant to a character as loaded using FreeType
 	struct Character
@@ -42,8 +39,11 @@ namespace TextRenderer
 	Shader* textShader;
 
 	static glm::mat4 s_projection;
-	int cachedWidth = 0;
-	int cachedHeight = 0;
+	int cachedWidth = -1;
+	int cachedHeight = -1;
+
+	void RenderText(Shader& shader, std::string text, float x, float y, float scale, glm::vec3 color);
+	void TextRenderCall(int length, GLuint shader);
 
 	bool Init()
 	{
@@ -121,8 +121,6 @@ namespace TextRenderer
 		textShader->use();
 		glUniform1i(glGetUniformLocation(textShader->ID, "ourTexture"), 0);
 
-		BeginFrame();
-
 		return true;
 	}
 
@@ -131,7 +129,7 @@ namespace TextRenderer
 		int newWidth = Backend::GetCurrentWindowWidth();
 		int newHeight = Backend::GetCurrentWindowHeight();
 
-		if (newWidth == 0 || newHeight == 0) return;
+		if (newWidth <= 0 || newHeight <= 0) return;
 
 		if (newWidth != cachedWidth || newHeight != cachedHeight)
 		{
@@ -152,16 +150,16 @@ namespace TextRenderer
 
 	void Render(const std::string& text, float x, float y, float scale, const glm::vec3& color)
 	{
+		if (cachedWidth <= 0 || cachedHeight <= 0) return;
+
 		float widthRatio = (float)cachedWidth / REFERENCE_WIDTH;
 		float heightRatio = (float)cachedHeight / REFERENCE_HEIGHT;
 
 		float finalX = x * widthRatio;
 		float finalY = y * heightRatio;
-
-		float finalScale = scale * heightRatio;
-
-		finalScale = finalScale * 48.0f / 256.0f;
 		float copyX = finalX;
+
+		float finalScale = scale * heightRatio * (48.0f / 256.0f);
 
 		textShader->use();
 		glUniform3f(glGetUniformLocation(textShader->ID, "textColor"), color.x, color.y, color.z);

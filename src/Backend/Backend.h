@@ -6,7 +6,7 @@ namespace Backend
 {
 	bool Init(WindowedMode windowMode);
 	void BeginFrame();
-	void UpdateSystem();
+	void UpdateServices();
 	void UpdateUtilities();
 	void EndFrame();
 	void Destroy();
@@ -22,4 +22,5 @@ namespace Backend
 	int GetCurrentWindowWidth();
 	int GetCurrentWindowHeight();
 	void UpdateLazyKeyPresses();
+	double GetTime();
 }

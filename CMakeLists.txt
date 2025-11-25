@@ -25,7 +25,7 @@ add_subdirectory(${IMGUI_DIR})
 add_subdirectory(${FREETYPE_DIR})
 
 add_executable(${PROJECT_NAME}
-    src/JuliaSet.cpp
+    src/Main.cpp
 
     src/Backend/GLFW.cpp 
     src/Backend/Backend.cpp 
@@ -34,8 +34,10 @@ add_executable(${PROJECT_NAME}
     src/API/GL_Backend.cpp
     src/UI/FpsService.cpp 
     src/ViewPort/Viewport.cpp
-    
- "src/ViewPort/ViewportService.cpp")
+    src/ViewPort/ViewportService.cpp
+    src/JuliaSet/JuliaKernels.cu
+    src/JuliaSet/JuliaService.cpp
+)
 
 configure_file(
     ${CMAKE_SOURCE_DIR}/src/misc/root_directory.h.in
@@ -46,8 +48,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_BINARY_DIR}/generated)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
-    glfw
     glad
+    glfw
     glm
     imgui
     freetype
