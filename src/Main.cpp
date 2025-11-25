@@ -1,6 +1,3 @@
-// K.A.K.A.H.I.
-#include <glad/glad.h>
-
 #include <iostream>
 
 #include "UI/TextRenderer.h"
@@ -11,7 +8,7 @@
 
 int main()
 {
-    std::cout << "When suffering comes, God doesn't leave us to cope with it in our own strength" << std::endl;;
+    std::cout << "when suffering comes, God doesn't leave us to cope with it in our own strength" << std::endl;;
 
     if (!Backend::Init(WindowedMode::WINDOWED))
     {
@@ -23,8 +20,6 @@ int main()
     {
         Backend::UpdateUtilities();
         Backend::BeginFrame();
-        glClearColor(0.2f, 0.1f, 0.3f, 0.4f);
-        glClear(GL_COLOR_BUFFER_BIT);
         Backend::UpdateServices();
 
         JuliaService::Render();

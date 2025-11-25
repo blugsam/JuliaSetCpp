@@ -8,6 +8,7 @@
 
 #include "../API/GL_Shader.h"
 #include "../Backend/Backend.h"
+#include "../Misc/fileSystem.h"
 
 extern "C" void LaunchJuliaKernel(unsigned char* devPtr, int width, int height, float rc, float rs);
 
@@ -55,7 +56,7 @@ namespace JuliaService
         glGenTextures(1, &textureID);
         glGenBuffers(1, &pboID);
 
-        juliaShader = new Shader("C:/Users/mijiy/source/repos/cpp/JuliaSetCpp/res/Shaders/julia.vs", "C:/Users/mijiy/source/repos/cpp/JuliaSetCpp/res/Shaders/julia.fs");
+        juliaShader = new Shader(FileSystem::getPath("res/Shaders/julia.vs").c_str(), FileSystem::getPath("res/Shaders/julia.fs").c_str());
         juliaShader->use();
         glUniform1i(glGetUniformLocation(juliaShader->ID, "screenTexture"), 0);
     }

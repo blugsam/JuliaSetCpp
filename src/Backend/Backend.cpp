@@ -41,6 +41,7 @@ namespace Backend
 		JuliaService::BeginFrame();
 		ImGuiService::BeginFrame();
 		TextRenderer::BeginFrame();
+		OpenGLBackend::BeginFrame();
 	}
 
 	void UpdateServices()

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 project(JuliaSet LANGUAGES CUDA CXX)
 
 set(CMAKE_CUDA_STANDARD 14)
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 20)
 
 set(VENDOR_DIR "${PROJECT_SOURCE_DIR}/vendor")
 set(GLFW_DIR "${VENDOR_DIR}/glfw")

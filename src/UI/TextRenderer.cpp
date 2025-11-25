@@ -116,7 +116,7 @@ namespace TextRenderer
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 
-		textShader = new Shader("C:/Users/mijiy/source/repos/cpp/JuliaSetCpp/res/Shaders/text.vs", "C:/Users/mijiy/source/repos/cpp/JuliaSetCpp/res/Shaders/text.fs");
+		textShader = new Shader(FileSystem::getPath("res/Shaders/text.vs").c_str(), FileSystem::getPath("res/Shaders/text.fs").c_str());
 
 		textShader->use();
 		glUniform1i(glGetUniformLocation(textShader->ID, "ourTexture"), 0);
