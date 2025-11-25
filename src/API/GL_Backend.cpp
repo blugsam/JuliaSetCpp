@@ -31,4 +31,10 @@ namespace OpenGLBackend
 
 		return true;
 	}
+
+	void BeginFrame()
+	{
+		glClearColor(0.2f, 0.1f, 0.3f, 0.4f);
+		glClear(GL_COLOR_BUFFER_BIT);
+	}
 }

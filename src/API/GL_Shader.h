@@ -29,8 +29,8 @@ public:
         gShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
         try
         {
-            std::cout << "Attempting to load shader from: " << vertexPath << std::endl;
-            std::cout << "Attempting to load shader from: " << fragmentPath << std::endl;
+            std::cout << "attempting to load shader from: " << vertexPath << std::endl;
+            std::cout << "attempting to load shader from: " << fragmentPath << std::endl;
             // open files
             vShaderFile.open(vertexPath);
             fShaderFile.open(fragmentPath);
