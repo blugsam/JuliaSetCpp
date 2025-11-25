@@ -1,29 +1,18 @@
 #include "FpsService.h"
+#include <string>
 
 #include "../Backend/GLFW.h"
 #include "TextRenderer.h"
-#include <string>
-
-// this is freaking insane
 #include "../ViewPort/Viewport.h"
 #include "../ViewPort/ViewPortService.h"
 
 namespace FpsService
 {
 	std::string fps = "";
-	double titleCountdownS = 0.1;
 	double previousTime = 0;
 	int frameCount = 0;
-	Viewport* mainViewport = ViewportService::GetMainViewport();
-	glm::mat4 projection = mainViewport->GetProjectionMatrix();
 
-	void UpdateFps()
-	{
-		CalculateFps();
-		PrintFps();
-	}
-
-	void CalculateFps()
+	void Update()
 	{
 		double currentTime = Backend::GLFW::GetTime();
 		frameCount++;
@@ -36,7 +25,7 @@ namespace FpsService
 		}
 	}
 
-	void PrintFps()
+	void Render()
 	{
 		TextRenderer::Render(fps, 1800.0f, 10.0f, 1.0f, glm::vec3(1.0f));
 	}

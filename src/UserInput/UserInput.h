@@ -1,6 +1,5 @@
 #pragma once
 
-#include <GLFW/glfw3.h>
 #include "../Backend/Backend.h"
 
 namespace UserInput

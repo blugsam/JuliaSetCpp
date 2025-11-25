@@ -1,4 +1,4 @@
-#include "BackEnd.h"
+#include "Backend.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "../API/GL_Backend.h"
@@ -6,6 +6,8 @@
 #include "../UserInput/UserInput.h"
 #include "../UI/TextRenderer.h"
 #include "../ViewPort/ViewPortService.h"
+#include "../UI/FpsService.h"
+#include "../JuliaSet/JuliaService.h"
 
 namespace Backend
 {
@@ -25,6 +27,8 @@ namespace Backend
 
 		TextRenderer::Init();
 
+		JuliaService::Init();
+
 		glfwShowWindow(static_cast<GLFWwindow*>(Backend::GetWindowPointer()));
 
 		ViewportService::Init();
@@ -36,11 +40,13 @@ namespace Backend
 	{
 		TextRenderer::BeginFrame();
 		GLFW::BeginFrame();
+		JuliaService::BeginFrame();
 	}
 
-	void UpdateSystem()
+	void UpdateServices()
 	{
 		ViewportService::Update();
+		FpsService::Update();
 	}
 
 	void UpdateUtilities()
@@ -58,6 +64,7 @@ namespace Backend
 	{
 		GLFW::Destroy();
 		TextRenderer::Destroy();
+		JuliaService::Destroy();
 	}
 
 	void SetPresentTargetSize(int width, int height)
@@ -130,5 +137,10 @@ namespace Backend
 		{
 			//Callback::ShowFps();
 		}
+	}
+
+	double Backend::GetTime()
+	{
+		return GLFW::GetTime();
 	}
 }

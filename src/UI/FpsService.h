@@ -1,6 +1,7 @@
+#pragma once
+
 namespace FpsService
 {
-	void UpdateFps();
-	void CalculateFps();
-	void PrintFps();
+	void Update();
+	void Render();
 }
