@@ -5,7 +5,6 @@
 #include "GLFW.h"
 #include "../UserInput/UserInput.h"
 #include "../UI/TextRenderer.h"
-#include "../ViewPort/ViewPortService.h"
 #include "../UI/FpsService.h"
 #include "../JuliaSet/JuliaService.h"
 #include "../Imgui/ImguiService.h"
@@ -30,8 +29,6 @@ namespace Backend
 
 		glfwShowWindow(static_cast<GLFWwindow*>(Backend::GetWindowPointer()));
 
-		ViewportService::Init();
-
 		return true;
 	}
 
@@ -46,7 +43,6 @@ namespace Backend
 
 	void UpdateServices()
 	{
-		ViewportService::Update();
 		FpsService::Update();
 	}
 

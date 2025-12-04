@@ -32,9 +32,7 @@ add_executable(${PROJECT_NAME}
     src/UserInput/UserInput.cpp
     src/UI/TextRenderer.cpp 
     src/API/GL_Backend.cpp
-    src/UI/FpsService.cpp 
-    src/ViewPort/Viewport.cpp
-    src/ViewPort/ViewportService.cpp
+    src/UI/FpsService.cpp
     src/JuliaSet/JuliaKernels.cu
     src/JuliaSet/JuliaService.cpp
     src/Imgui/ImguiService.cpp)

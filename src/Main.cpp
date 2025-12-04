@@ -19,7 +19,9 @@ int main()
     while (Backend::WindowIsOpen())
     {
         Backend::UpdateUtilities();
+
         Backend::BeginFrame();
+
         Backend::UpdateServices();
 
         JuliaService::Render();
