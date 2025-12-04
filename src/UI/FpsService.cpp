@@ -3,8 +3,6 @@
 
 #include "../Backend/GLFW.h"
 #include "TextRenderer.h"
-#include "../ViewPort/Viewport.h"
-#include "../ViewPort/ViewPortService.h"
 
 namespace FpsService
 {
